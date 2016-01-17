@@ -42,6 +42,7 @@ int main()
     void setrocketparameter();
     void setenvparameter();
     void setsimulationparameter();
+    void outparameter(ofstream *out);
     void run();
     setenvparameter();
     setrocketparameter();
@@ -55,8 +56,9 @@ int main()
         {
             case 1: setrocketparameter(); break;
             case 2: setenvparameter(); break;
-            case 3: run(); break;
-            case 4: return 0;
+            case 3: setsimulationparameter(); break;
+            case 4: run(); break;
+            case 5: return 0;
         }
     }
 }
@@ -66,8 +68,9 @@ void printfun()
     cout << "==================执行==================" << endl;
     cout << "1.设置火箭参数" << endl;
     cout << "2.设置环境参数" << endl;
-    cout << "3.发射火箭" << endl;
-    cout << "4.退出模拟" << endl;
+    cout << "3.设置模拟参数" << endl;
+    cout << "4.发射火箭" << endl;
+    cout << "5.退出模拟" << endl;
     cout << "========================================" << endl;
     cout << "输入序号以执行功能：";
 }
@@ -109,13 +112,22 @@ void setsimulationparameter()
 
 }
 
+void outparameter(ofstream *out)
+{
+    *out << "环境常量：\n高速临界速度 m/s：" <<hv<<"\n引力常量 N·m^2/kg^2："<<G<<"\n";
+    *out << "环境参数：\n低速下阻力系数 1：" <<u1<<"\n高速下阻力系数 1："<<u2<<"\n星球自转角速度 rad/s："<<w<<"\n星球半径 m："<<R<<"\n星球质量 kg："<<M<<"\n";
+    *out << "火箭属性：\n发射质量 kg：" <<m0<<"\n燃料质量 kg："<<mr<<"\n喷气速度 m/s："<<ve<<"\n燃料消耗速度 kg/s："<<vm<<"\n";
+    *out << "模拟参数：\n时间步长：" <<dt<<"\n";
+    *out << "==================================\n";
+}
+
 void run()
 {
     ofstream out("D:\data.rls");
     if(!out.is_open())
         cout << "文件打开失败！将只显示控制台结果！" << endl;
     else
-        out << "";
+        outparameter(&out);
     h=0;v=0;t=0;
     double rr = mr;//燃料剩余量 kg
     double a = 0;//加速度 m/s^2
@@ -123,12 +135,19 @@ void run()
     double sh = 0;//水平位移 m
     cout << "===========================================" << endl;
     if(vh==0)
-        cout << "时间|质量|加速度|速度|高度" << endl;
+    {
+        cout << "时间(s)|质量(kg)|加速度(m/s^2)|速度(m/s)|高度(m)" << endl;
+        out << "时间(s)|质量(kg)|加速度(m/s^2)|速度(m/s)|高度(m)\n";
+    }
     else
-        cout << "时间|质量|加速度(竖直)|加速度(水平)|速度(竖直)|速度(水平)|竖直位移|水平位移" << endl;
+    {
+        cout << "时间(s)|质量(kg)|竖直加速度(m/s^2)|水平加速度(m/s^2)|竖直速度(m/s)|水平速度(m/s)|竖直位移(m)|水平位移(m)" << endl;
+        out << "时间(s)|质量(kg)|竖直加速度(m/s^2)|水平加速度(m/s^2)|竖直速度(m/s)|水平速度(m/s)|竖直位移(m)|水平位移(m)\n";
+    }
     while(rr>0)
     {
         t+=dt;
+        rr -= vm * dt;
         if(vh==0)
         {
             if(v>=hv)
@@ -138,6 +157,7 @@ void run()
             v+=a*dt;
             h+=v*dt;
             cout << t << "|" << m0-mr+rr << "|" << a << "|" << v << "|" << h << endl;
+            out <<  t << "|" << m0-mr+rr << "|" << a << "|" << v << "|" << h << "\n";
         }
         else
         {
@@ -160,8 +180,9 @@ void run()
             h+=v*dt;
             sh+=vh*dt;
             cout << t << "|" << m0-mr+rr << "|" << av << "|" << ah << "|" << v << "|" << vh << "|" << h << "|" << sh << endl;
+            out << t << "|" << m0-mr+rr << "|" << av << "|" << ah << "|" << v << "|" << vh << "|" << h << "|" << sh << "\n";
         }
-        rr -= vm * dt;
+
     }
     if(out.is_open())
     {
