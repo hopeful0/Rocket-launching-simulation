@@ -79,11 +79,11 @@ void setenvparameter()
     cin >> u1;
     cout << "请输入高速下阻力系数：" << endl;
     cin >> u2;
-    cout << "请输入星球半径(m)：" << endl;
+    cout << "请输入星球半径(m|不能为0，否则会出错）：" << endl;
     cin >> R;
     cout << "请输入星球质量(kg)：" << endl;
     cin >> M;
-    cout << "请输入星球自转速度(m/s)：" << endl;
+    cout << "请输入星球自转速度(rad/s)：" << endl;
     cin >> w;
 }
 
@@ -126,18 +126,18 @@ void run()
         cout << "时间|质量|加速度|速度|高度" << endl;
     else
         cout << "时间|质量|加速度(竖直)|加速度(水平)|速度(竖直)|速度(水平)|竖直位移|水平位移" << endl;
-    while(mr>0)
+    while(rr>0)
     {
         t+=dt;
         if(vh==0)
         {
             if(v>=hv)
-                a=(vm*ve-u2*pow(v,2)-G*M*(m0+rr)/pow(R+h,2))/(m0+rr);
+                a=(vm*ve-u2*pow(v,2)-G*M*(m0-mr+rr)/pow(R+h,2))/(m0-mr+rr);
             else
-                a=(vm*ve-u1*v-G*M*(m0+rr)/pow(R+h,2))/(m0+rr);
+                a=(vm*ve-u1*v-G*M*(m0-mr+rr)/pow(R+h,2))/(m0-mr+rr);
             v+=a*dt;
             h+=v*dt;
-            cout << t << "|" << m0+rr << "|" << a << "|" << v << "|" << h << endl;
+            cout << t << "|" << m0-mr+rr << "|" << a << "|" << v << "|" << h << endl;
         }
         else
         {
@@ -147,19 +147,19 @@ void run()
             beta = atan(sh / (R+h));
             if(v>=hv)
             {
-                av=(vm*ve*cos(alpha)-u2*pow(v*cos(alpha),2)-G*M*(m0+rr)/(pow(R+h,2)+pow(sh,2))*cos(beta))/(m0+rr);
-                ah=(vm*ve*sin(alpha)-u2*pow(v*sin(alpha),2)-G*M*(m0+rr)/(pow(R+h,2)+pow(sh,2))*sin(beta))/(m0+rr);
+                av=(vm*ve*cos(alpha)-u2*pow(v*cos(alpha),2)-G*M*(m0-mr+rr)/(pow(R+h,2)+pow(sh,2))*cos(beta))/(m0-mr+rr);
+                ah=(vm*ve*sin(alpha)-u2*pow(v*sin(alpha),2)-G*M*(m0-mr+rr)/(pow(R+h,2)+pow(sh,2))*sin(beta))/(m0-mr+rr);
             }
             else
             {
-                av=(vm*ve*cos(alpha)-u1*v*cos(alpha)-G*M*(m0+rr)/(pow(R+h,2)+pow(sh,2))*cos(beta))/(m0+rr);
-                ah=(vm*ve*sin(alpha)-u1*v*sin(alpha)-G*M*(m0+rr)/(pow(R+h,2)+pow(sh,2))*sin(beta))/(m0+rr);
+                av=(vm*ve*cos(alpha)-u1*v*cos(alpha)-G*M*(m0-mr+rr)/(pow(R+h,2)+pow(sh,2))*cos(beta))/(m0-mr+rr);
+                ah=(vm*ve*sin(alpha)-u1*v*sin(alpha)-G*M*(m0-mr+rr)/(pow(R+h,2)+pow(sh,2))*sin(beta))/(m0-mr+rr);
             }
             v+=av*dt;
             vh+=ah*dt;
             h+=v*dt;
             sh+=vh*dt;
-            cout << t << "|" << m0+rr << "|" << av << "|" << ah << "|" << v << "|" << vh << "|" << h << "|" << sh << endl;
+            cout << t << "|" << m0-mr+rr << "|" << av << "|" << ah << "|" << v << "|" << vh << "|" << h << "|" << sh << endl;
         }
         rr -= vm * dt;
     }
