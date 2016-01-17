@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <math.h>
 
 /**
@@ -80,6 +81,10 @@ void setenvparameter()
     cin >> u2;
     cout << "请输入星球半径(m)：" << endl;
     cin >> R;
+    cout << "请输入星球质量(kg)：" << endl;
+    cin >> M;
+    cout << "请输入星球自转速度(m/s)：" << endl;
+    cin >> w;
 }
 
 
@@ -106,11 +111,21 @@ void setsimulationparameter()
 
 void run()
 {
+    ofstream out("D:\data.rls");
+    if(!out.is_open())
+        cout << "文件打开失败！将只显示控制台结果！" << endl;
+    else
+        out << "";
     h=0;v=0;t=0;
     double rr = mr;//燃料剩余量 kg
     double a = 0;//加速度 m/s^2
-    double vh = w * t;//水平速度 m/s
+    double vh = w * R;//水平速度 m/s
     double sh = 0;//水平位移 m
+    cout << "===========================================" << endl;
+    if(vh==0)
+        cout << "时间|质量|加速度|速度|高度" << endl;
+    else
+        cout << "时间|质量|加速度(竖直)|加速度(水平)|速度(竖直)|速度(水平)|竖直位移|水平位移" << endl;
     while(mr>0)
     {
         t+=dt;
@@ -122,6 +137,7 @@ void run()
                 a=(vm*ve-u1*v-G*M*(m0+rr)/pow(R+h,2))/(m0+rr);
             v+=a*dt;
             h+=v*dt;
+            cout << t << "|" << m0+rr << "|" << a << "|" << v << "|" << h << endl;
         }
         else
         {
@@ -143,8 +159,13 @@ void run()
             vh+=ah*dt;
             h+=v*dt;
             sh+=vh*dt;
+            cout << t << "|" << m0+rr << "|" << av << "|" << ah << "|" << v << "|" << vh << "|" << h << "|" << sh << endl;
         }
+        rr -= vm * dt;
     }
-
+    if(out.is_open())
+    {
+        out.close();
+    }
     return;
 }
