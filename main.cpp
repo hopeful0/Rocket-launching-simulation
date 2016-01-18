@@ -165,15 +165,17 @@ void run()
             double alpha,beta;//v与竖直方向夹角，R'与竖直方向夹角
             alpha = atan(vh / v);
             beta = atan(sh / (R+h));
+            double vz=w*sqrt(pow(R+h,2)+pow(sh,2));
+            double Gm=G*M*(m0-mr+rr);
             if(v>=hv)
             {
-                av=(vm*ve*cos(alpha)-u2*pow(v*cos(alpha),2)-G*M*(m0-mr+rr)/(pow(R+h,2)+pow(sh,2))*cos(beta))/(m0-mr+rr);
-                ah=(vm*ve*sin(alpha)-u2*pow(v*sin(alpha),2)-G*M*(m0-mr+rr)/(pow(R+h,2)+pow(sh,2))*sin(beta))/(m0-mr+rr);
+                av=(vm*ve-u2*pow(vz*cos(beta)-v,2)-Gm/(pow(R+h,2)+pow(sh,2))*cos(beta))/(m0-mr+rr);
+                ah=(u2*pow(vz*sin(beta)-vh,2)-Gm/(pow(R+h,2)+pow(sh,2))*sin(beta))/(m0-mr+rr);
             }
             else
             {
-                av=(vm*ve*cos(alpha)-u1*v*cos(alpha)-G*M*(m0-mr+rr)/(pow(R+h,2)+pow(sh,2))*cos(beta))/(m0-mr+rr);
-                ah=(vm*ve*sin(alpha)-u1*v*sin(alpha)-G*M*(m0-mr+rr)/(pow(R+h,2)+pow(sh,2))*sin(beta))/(m0-mr+rr);
+                av=(vm*ve-u1*fabs(cos(beta)-v)-Gm/(pow(R+h,2)+pow(sh,2))*cos(beta))/(m0-mr+rr);
+                ah=(u1*fabs(vz*sin(beta)-vh)-Gm/(pow(R+h,2)+pow(sh,2))*sin(beta))/(m0-mr+rr);
             }
             v+=av*dt;
             vh+=ah*dt;
