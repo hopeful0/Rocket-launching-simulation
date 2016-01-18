@@ -169,13 +169,13 @@ void run()
             double Gm=G*M*(m0-mr+rr);
             if(v>=hv)
             {
-                av=(vm*ve-u2*pow(vz*cos(beta)-v,2)-Gm/(pow(R+h,2)+pow(sh,2))*cos(beta))/(m0-mr+rr);
-                ah=(u2*pow(vz*sin(beta)-vh,2)-Gm/(pow(R+h,2)+pow(sh,2))*sin(beta))/(m0-mr+rr);
+                av=(vm*ve+u2*(vz*sin(-beta)-v)*fabs(vz*sin(-beta)-v)-Gm/(pow(R+h,2)+pow(sh,2))*cos(beta))/(m0-mr+rr);
+                ah=(u2*(vz*cos(-beta)-vh)*fabs(vz*cos(-beta)-vh)-Gm/(pow(R+h,2)+pow(sh,2))*sin(beta))/(m0-mr+rr);
             }
             else
             {
-                av=(vm*ve-u1*fabs(cos(beta)-v)-Gm/(pow(R+h,2)+pow(sh,2))*cos(beta))/(m0-mr+rr);
-                ah=(u1*fabs(vz*sin(beta)-vh)-Gm/(pow(R+h,2)+pow(sh,2))*sin(beta))/(m0-mr+rr);
+                av=(vm*ve+u1*(vz*sin(-beta)-v)-Gm/(pow(R+h,2)+pow(sh,2))*cos(beta))/(m0-mr+rr);
+                ah=(u1*(vz*cos(-beta)-vh)-Gm/(pow(R+h,2)+pow(sh,2))*sin(beta))/(m0-mr+rr);
             }
             v+=av*dt;
             vh+=ah*dt;
